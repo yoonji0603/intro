@@ -3,138 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="나의 소개 홈페이지입니다.">
-    <meta name="author" content="나의 이름">
-    <title>나의 소개</title>
+    <title>날씨 및 미세먼지 정보</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
-            color: #333;
+            text-align: center;
         }
-
         header {
             background-color: #4CAF50;
             color: white;
             padding: 20px;
-            text-align: center;
         }
-
-        header h1 {
+        h1 {
             margin: 0;
-            font-size: 2.5em;
         }
-
         .container {
-            width: 80%;
-            margin: 0 auto;
-            padding: 20px;
+            margin-top: 20px;
         }
-
-        .section {
-            margin-bottom: 40px;
-        }
-
-        h2 {
-            font-size: 2em;
-            color: #4CAF50;
-        }
-
-        p {
-            font-size: 1.2em;
-            line-height: 1.6;
-        }
-
-        .skills ul {
-            list-style-type: none;
-            padding-left: 0;
-        }
-
-        .skills li {
-            background-color: #e7f3e7;
-            margin: 5px 0;
+        input[type="text"] {
             padding: 10px;
+            font-size: 16px;
+            width: 200px;
+            margin: 10px;
+            border: 2px solid #4CAF50;
             border-radius: 5px;
         }
-
-        .youtube-video {
-            margin: 40px 0;
-            text-align: center;
-        }
-
-        footer {
-            background-color: #333;
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
             color: white;
-            text-align: center;
-            padding: 10px;
-            position: relative;
-            bottom: 0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .weather-info {
+            margin-top: 30px;
+        }
+        .weather-info h2 {
+            margin-bottom: 10px;
+        }
+        .weather-info p {
+            font-size: 1.2em;
+        }
+        .satellite-image {
+            margin-top: 20px;
+            border: 1px solid #ddd;
             width: 100%;
-        }
-
-        .contact {
-            background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .contact a {
-            color: #4CAF50;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .contact a:hover {
-            text-decoration: underline;
+            max-width: 600px;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>나의 소개 페이지</h1>
-        <p>안녕하세요! 박윤지를 소개합니다.</p>
+        <h1>날씨 및 미세먼지 정보 조회</h1>
     </header>
 
     <div class="container">
-        <section class="section">
-            <h2>자기소개</h2>
-            <p>안녕하세요, 저는 앵무새입니다. 현재 [직업 또는 전공]으로 활동하고 있으며, [자신에 대한 간단한 소개].</p>
-        </section>
-
-        <section class="section">
-            <h2>기술 & 능력</h2>
-            <div class="skills">
-                <ul>
-                    <li>웹 개발</li>
-                    <li>프로그래밍 언어: HTML, CSS, JavaScript</li>
-                    <li>프레임워크: React, Vue</li>
-                    <li>UI/UX 디자인</li>
-                    <li>데이터 분석</li>
-                </ul>
-            </div>
-        </section>
-
-        <section class="youtube-video">
-            <h2>추천 유튜브 영상</h2>
-            <!-- 유튜브 영상 삽입 -->
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/EE_GsDBfYQ0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </section>
-
-        <section class="section contact">
-            <h2>연락처</h2>
-            <p>저와 연락을 원하시면 아래 방법을 통해 연락해주세요!</p>
-            <p>Email: <a href="mailto:your.email@example.com">your.email@example.com</a></p>
-            <p>LinkedIn: <a href="https://www.linkedin.com/in/your-profile" target="_blank">LinkedIn 프로필</a></p>
-        </section>
+        <input type="text" id="city" placeholder="도시 이름을 입력하세요">
+        <button onclick="getWeather()">날씨 조회</button>
     </div>
 
-    <footer>
-        <p>&copy; 2025 나의 이름. All Rights Reserved.</p>
-    </footer>
+    <div class="weather-info" id="weather-info">
+        <!-- 날씨 및 미세먼지 정보가 여기에 표시됩니다. -->
+    </div>
+
+    <script>
+        const apiKey = "24109ddecb29a5405afe2a8df42c5e34";  // OpenWeather API 키
+
+        function getWeather() {
+            const city = document.getElementById("city").value.trim();  // 입력된 도시 이름
+            const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric&lang=kr`;
+            const pollutionUrl = `https://api.openweathermap.org/data/2.5/air_pollution?appid=${apiKey}`;
+
+            // 입력값이 없을 경우
+            if (!city) {
+                alert("도시 이름을 입력해주세요.");
+                return;
+            }
+
+            // 날씨 API 요청
+            fetch(weatherUrl)
+                .then(response => {
+                    if (!response.ok) {  // 응답이 정상적이지 않은 경우
+                        throw new Error('날씨 정보를 가져올 수 없습니다.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.cod !== 200) {
+                        // 도시가 잘못된 경우
+                        document.getElementById("weather-info").innerHTML = "<p>잘못된 도시 이름입니다. 다시 시도해 주세요.</p>";
+                    } else {
+                        const weatherDescription = data.weather[0].description;
+                        const temperature = data.main.temp;
+                        const humidity = data.main.humidity;
+                        const windSpeed = data.wind.speed;
+                        const cityName = data.name;
+                        const lat = data.coord.lat;  // 위도
+                        const lon = data.coord.lon;  // 경도
+                        const rain = data.rain ? data.rain["1h"] : 0;  // 1시간 강수량 (없으면 0)
+
+                        // 미세먼지 API 요청 (날씨 API의 좌표값 사용)
+                        const pollutionApiUrl = `${pollutionUrl}&lat=${lat}&lon=${lon}`;
+
+                        // 미세먼지 정보 요청
+                        fetch(pollutionApiUrl)
+                            .then(response => response.json())
+                            .then(pollutionData => {
+                                const pm10 = pollutionData.list[0].components.pm10;
+                                const pm25 = pollutionData.list[0].components.pm2_5;
+                                const airQuality = pollutionData.list[0].main.aqi; // 공기질 지수
+
+                                // 미세먼지 정보
+                                const pollutionHtml = `
+                                    <p>PM10: ${pm10} µg/m³</p>
+                                    <p>PM2.5: ${pm25} µg/m³</p>
+                                    <p>공기질 지수(AQI): ${airQuality}</p>
+                                `;
+
+                                // 날씨 정보 HTML
+                                const weatherHtml = `
+                                    <h2>${cityName}의 날씨</h2>
+                                    <p>날씨: ${weatherDescription}</p>
+                                    <p>기온: ${temperature}°C</p>
+                                    <p>습도: ${humidity}%</p>
+                                    <p>풍속: ${windSpeed} m/s</p>
+                                    <p>강수량: ${rain} mm</p> <!-- 강수량 추가 -->
+                                `;
+
+                                // 위성 이미지 URL 생성
+                                const satelliteImageUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lon}&zoom=10&size=600x300&maptype=satellite&key=YOUR_GOOGLE_MAPS_API_KEY`;
+
+                                // HTML에 위성 이미지 추가
+                                const satelliteHtml = `
+                                    <h3>${cityName}의 위성 이미지</h3>
+                                    <img src="${satelliteImageUrl}" class="satellite-image" alt="Satellite Image">
+                                `;
+
+                                document.getElementById("weather-info").innerHTML = weatherHtml + pollutionHtml + satelliteHtml;
+                            })
+                            .catch(error => {
+                                document.getElementById("weather-info").innerHTML = "<p>미세먼지 정보를 가져오지 못했습니다. 다시 시도해 주세요.</p>";
+                                console.error("Error fetching air pollution data:", error);
+                            });
+                    }
+                })
+                .catch(error => {
+                    document.getElementById("weather-info").innerHTML = "<p>날씨 정보를 가져오지 못했습니다. 다시 시도해 주세요.</p>";
+                    console.error("Error fetching weather data:", error);
+                });
+        }
+    </script>
 
 </body>
 </html>
